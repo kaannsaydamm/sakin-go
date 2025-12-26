@@ -1,0 +1,34 @@
+# Go build artifacts
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspace / tooling
+/vendor/
+/go.work
+/go.work.sum
+
+# Coverage and profiling
+coverage.out
+*.coverprofile
+*.pprof
+
+# Environment
+.env
+.env.*
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
