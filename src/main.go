@@ -1,32 +1,49 @@
+// Package main is the legacy entry point for sakin-go
+// This file is maintained for backward compatibility.
+// New deployments should use cmd/sge-network-sensor/main.go
 package main
 
 import (
+	"fmt"
 	"log"
-	"sync"
+	"os"
+	"path/filepath"
 
-	Handlers "github.com/atailh4n/sakin/handlers"
-	Utils "github.com/atailh4n/sakin/utils"
-	"github.com/google/gopacket/pcap"
+	"github.com/atailh4n/sakin/cmd/sge-network-sensor"
 )
 
 func main() {
-	ifaces, err := pcap.FindAllDevs()
+	fmt.Println("==============================================")
+	fmt.Println("  SGE Network Sensor - Legacy Entry Point")
+	fmt.Println("==============================================")
+	fmt.Println("")
+	fmt.Println("WARNING: This is a legacy entry point.")
+	fmt.Println("For new deployments, run the binary from:")
+	fmt.Println("  cmd/sge-network-sensor/main.go")
+	fmt.Println("")
+	fmt.Println("Migrating to new entry point...")
+
+	// Check if new binary exists
+	execPath, err := os.Executable()
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Warning: Could not determine executable path: %v", err)
+	} else {
+		newBinary := filepath.Join(filepath.Dir(execPath), "sge-network-sensor")
+		if _, err := os.Stat(newBinary); err == nil {
+			fmt.Printf("New binary found at: %s\n", newBinary)
+		}
 	}
 
-	// Initalize Database
-	db, err := Handlers.InitDB()
-	if err != nil {
-		log.Fatalf("DB connection error: %v", err)
-	}
-	defer db.Close()
-
-	// Run proxy server for HTTPS listen.
-	Handlers.InitProxyServer()
-
-	// Listen network traffic and log.
-	var wg sync.WaitGroup
-	Utils.MonitorTraffic(ifaces, db, &wg)
-	wg.Wait()
+	fmt.Println("")
+	fmt.Println("For usage information, run with --help flag")
+	fmt.Println("")
+	fmt.Println("Available commands:")
+	fmt.Println("  --config <path>  : Configuration file path")
+	fmt.Println("  --preset <name>  : Configuration preset (light|standard|aggressive)")
+	fmt.Println("  --workers <n>    : Number of worker threads")
+	fmt.Println("  --version        : Print version information")
+	fmt.Println("")
+	fmt.Println("Example:")
+	fmt.Println("  ./sge-network-sensor --preset standard")
+	fmt.Println("==============================================")
 }

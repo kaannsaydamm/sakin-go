@@ -1,0 +1,113 @@
+# SGE Network Sensor Configuration
+# This file contains all configuration options for the network sensor
+
+# General settings
+instance_id: "sge-sensor-01"
+log_level: "info"
+environment: "production"
+
+# Network interface settings
+interfaces:
+  # List of interfaces to capture from (empty = all interfaces)
+  names:
+    - eth0
+    - en0
+  # Promiscuous mode
+  promiscuous: true
+  # Snaplen for packet capture
+  snaplen: 1600
+  # BPF filter expression (optional)
+  bpf_filter: "not port 22 and not port 53"
+  # Buffer size in bytes
+  buffer_size: 10485760  # 10MB
+
+# Packet capture settings
+capture:
+  # Capture timeout in seconds
+  timeout: 30
+  # Immediate mode
+  immediate: false
+  # Fanout settings for load balancing
+  fanout_id: 0
+  fanout_type: "hash"  # hash, lb, cpu, queue
+
+# Deep Packet Inspection settings
+dpi:
+  # Enable protocol parsing
+  http_enabled: true
+  dns_enabled: true
+  tls_enabled: true
+  smb_enabled: false
+  # Maximum payload bytes to inspect
+  max_payload_bytes: 4096
+  # Enable stream reassembly
+  stream_reassembly: true
+
+# Threat detection settings
+threat_detection:
+  enabled: true
+
+  # Anomaly detection
+  anomaly:
+    enabled: true
+    max_packet_size: 65535
+    burst_threshold: 1000  # packets per second
+    burst_window: 1  # seconds
+
+  # Port scan detection
+  port_scan:
+    enabled: true
+    port_threshold: 100  # unique ports to trigger detection
+    window: 60  # seconds
+    sensitivity: "medium"  # low, medium, high
+
+  # C2 beacon detection
+  c2_beacon:
+    enabled: true
+    min_interval: 10  # seconds
+    max_interval: 300  # seconds
+    jitter_threshold: 0.2  # 20%
+    score_threshold: 70
+
+  # Data exfiltration detection
+  exfiltration:
+    enabled: true
+    rate_threshold: 10485760  # 10 MB/s
+    volume_threshold: 1073741824  # 1 GB
+    unusual_hours_multiplier: 2.0
+
+# Output settings
+output:
+  # NATS JetStream settings
+  nats:
+    enabled: true
+    urls:
+      - "nats://localhost:4222"
+    subject: "sge.events.network"
+    stream: "sge-network-events"
+    consumer: "sge-network-sensor"
+    connect_timeout: 10s
+    reconnect_wait: 5s
+    max_reconnect_attempts: 10
+    # TLS configuration (optional)
+    # cert_file: "/etc/sge/certs/client.crt"
+    # key_file: "/etc/sge/certs/client.key"
+    # ca_cert_file: "/etc/sge/certs/ca.crt"
+
+  # Local file output (fallback)
+  file:
+    enabled: false
+    directory: "/var/log/sge"
+    max_size: 1073741824  # 1GB
+    max_age: 24  # hours
+    compress: true
+
+# Resource limits
+resources:
+  max_cpu: 2  # percentage
+  max_memory: 512  # MB
+  max_goroutines: 100
+  worker_pool_size: 10
+  queue_size: 10000
+  batch_size: 1000
+  batch_flush_interval: 5s
