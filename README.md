@@ -116,4 +116,8 @@ sakin-go/
 Bu proje açık kaynaklıdır ve topluluk katkılarına açıktır. Lütfen `IMPLEMENTATION.md` dosyasındaki yol haritasını inceleyin.
 
 ---
+<<<<<<< HEAD
+Kaan Saydam ve Ata İlhan Köktürk tarafından yazılmıştır.
+=======
 *Kaan Saydam ve Ata İlhan Köktürk tarafından, sevgiyle tasarlanmıştır.*
+>>>>>>> 7afd328 (chore: update scripts with interactive menu & ascii art, update readme)
