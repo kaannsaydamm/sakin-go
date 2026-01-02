@@ -2,6 +2,14 @@ package dpi
 
 import (
 	"encoding/binary"
+	"unicode/utf8"
+)
+
+// TLS parsing safety limits
+const (
+	MaxTLSPayloadSize = 16384 // 16KB max for TLS record inspection
+	MaxSNILength      = 253   // DNS name max length
+	MinTLSHelloSize   = 43    // Minimum valid ClientHello size
 )
 
 // TLSClientHello represents minimal extracted TLS information.
@@ -11,10 +19,14 @@ type TLSClientHello struct {
 }
 
 // ParseTLSClientHello attempts to extract SNI from a TCP payload.
-// Logic adapted from C# reference (offset based parsing).
+// Includes safety bounds checking to prevent crashes from malformed data.
 func ParseTLSClientHello(payload []byte) (*TLSClientHello, bool) {
-	if len(payload) < 43 {
+	// Safety: limit payload size
+	if len(payload) < MinTLSHelloSize {
 		return nil, false
+	}
+	if len(payload) > MaxTLSPayloadSize {
+		payload = payload[:MaxTLSPayloadSize]
 	}
 
 	// TLS Record Header
@@ -113,12 +125,27 @@ func ParseTLSClientHello(payload []byte) (*TLSClientHello, bool) {
 			nameLen := int(binary.BigEndian.Uint16(payload[offset : offset+2]))
 			offset += 2
 
+			// Safety: validate name length
+			if nameLen == 0 || nameLen > MaxSNILength {
+				return nil, false
+			}
+
 			if offset+nameLen > extensionsEnd {
 				return nil, false
 			}
 
-			serverName := string(payload[offset : offset+nameLen])
-			return &TLSClientHello{ServerName: serverName}, true
+			sniBytes := payload[offset : offset+nameLen]
+			// Safety: validate UTF-8 and no control characters
+			if !utf8.Valid(sniBytes) {
+				return nil, false
+			}
+			for _, b := range sniBytes {
+				if b < 32 || b == 127 {
+					return nil, false
+				}
+			}
+
+			return &TLSClientHello{ServerName: string(sniBytes)}, true
 		}
 
 		offset += extLen

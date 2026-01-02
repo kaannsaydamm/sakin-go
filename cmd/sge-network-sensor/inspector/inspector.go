@@ -95,12 +95,17 @@ func (i *Inspector) captureLoop(iface string) {
 	defer i.wg.Done()
 	log.Printf("[Inspector] Starting capture on %s", iface)
 
-	handle, err := pcap.OpenLive(iface, i.config.SnapLen, i.config.PromiscuousMode, pcap.BlockForever)
+	// Use configured timeout instead of BlockForever to prevent CPU spinning
+	handle, err := pcap.OpenLive(iface, i.config.SnapLen, i.config.PromiscuousMode, i.config.ReadTimeout)
 	if err != nil {
 		log.Printf("[Inspector] Error opening %s: %v", iface, err)
 		return
 	}
 	defer handle.Close()
+
+	// Note: SetBufferSize is not available in all gopacket/pcap versions
+	// Buffer tuning would require using pcap.InactiveHandle.SetBufferSize before activation
+	// For now, we rely on the timeout to prevent CPU spinning
 
 	if i.config.BPFFilter != "" {
 		if err := handle.SetBPFFilter(i.config.BPFFilter); err != nil {
