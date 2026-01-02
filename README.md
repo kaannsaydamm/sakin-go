@@ -1,6 +1,6 @@
 # SGE (Sakin Go Edition) 🛡️
 
-**S.A.K.I.N.** (Siber Analiz ve Karar İstihbarat Ağı) - Yeni Nesil Go Tabanlı SIEM/SOAR Platformu.
+**S.A.K.I.N.** (Siber Analiz ve Kontrol İstihbarat Noktası) - Yeni Nesil Go Tabanlı SIEM/SOAR Platformu.
 
 Bu proje, orijinal C# `sakin-core` mimarisinin **Go (Golang)** diline port edilmiş, yüksek performanslı, dağıtık ve bulut tabanlı (Cloud Native) versiyonudur. "Milyonlarca veriyi en düşük donanımda bile işleme" felsefesiyle tasarlanmıştır.
 
