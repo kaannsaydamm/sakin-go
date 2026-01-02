@@ -107,4 +107,4 @@ sakin-go/
 Bu proje açık kaynaklıdır ve topluluk katkılarına açıktır. Lütfen `IMPLEMENTATION.md` dosyasındaki yol haritasını inceleyin.
 
 ---
-*Deepmind Agentic Coding Team tarafından tasarlanmıştır.*
+Kaan Saydam ve Ata İlhan Köktürk tarafından yazılmıştır.
