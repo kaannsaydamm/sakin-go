@@ -40,34 +40,43 @@ Bu proje, orijinal C# `sakin-core` mimarisinin **Go (Golang)** diline port edilm
 - **Docker** & **Docker Compose**
 - **Linux:** `libpcap-dev` | **Windows:** `Npcap`
 
-### 1. Hazırlık
-Geliştirme ortamını hazırlamak için ilgili scripti çalıştırın:
+### 1. Kurulum ve Hazırlık (Installation)
+Geliştirme ortamını hazırlamak için interaktif kurulum scriptini çalıştırın:
 
 **Linux / macOS:**
 ```bash
 ./scripts/setup.sh
 ```
+*Menüden "1) Full Setup" seçeneğini seçerek gerekli tüm bağımlılıkları ve sertifikaları otomatik oluşturabilirsiniz.*
 
 **Windows (PowerShell):**
 ```powershell
 .\scripts\setup.ps1
 ```
 
-### ❗ Önemli: Konfigürasyon
-Proje kök dizinindeki `.env` dosyasını kendi ortamınıza göre düzenleyin.
-Manuel çalıştırmalarda çevresel değişkenlerin yüklü olduğundan emin olun (örn: `set -a; source .env; set +a` veya IDE ayarları).
+### 2. Master Kontrol (CLI)
+Sistemi yönetmek için `sakin` master scriptini kullanın.
+Parametre vermeden çalıştırırsanız **İnteraktif Menü** açılır:
 
-### 2. Başlatma
-Tüm altyapıyı (NATS, Veritabanları) ve servisleri başlatmak için:
-
-**Linux:**
+**Linux / macOS:**
 ```bash
-./scripts/manage.sh start
+./scripts/sakin.sh
 ```
 
-**Windows:**
+**Windows (PowerShell):**
 ```powershell
-.\scripts\manage.ps1 start
+.\scripts\sakin.ps1
+```
+
+**Parametreli Hızlı Kullanım:**
+- `start`: Altyapıyı ve Servisleri başlatır.
+- `stop`: Her şeyi durdurur.
+- `logs`: Logları canlı izler.
+- `status`: Durum kontrolü yapar.
+
+Örnek:
+```bash
+./scripts/sakin.sh start
 ```
 
 ### 3. Erişim
@@ -107,4 +116,4 @@ sakin-go/
 Bu proje açık kaynaklıdır ve topluluk katkılarına açıktır. Lütfen `IMPLEMENTATION.md` dosyasındaki yol haritasını inceleyin.
 
 ---
-Kaan Saydam ve Ata İlhan Köktürk tarafından yazılmıştır.
+*Kaan Saydam ve Ata İlhan Köktürk tarafından, sevgiyle tasarlanmıştır.*
