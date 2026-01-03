@@ -12,12 +12,27 @@ import (
 	"sakin-go/cmd/sge-agent/collectors/host"
 	"sakin-go/cmd/sge-agent/communicator"
 	"sakin-go/cmd/sge-agent/config"
+	"sakin-go/cmd/sge-agent/updater"
 )
 
 func main() {
 	// 1. Config
 	cfg := config.LoadConfig()
 	log.Printf("[Agent] Starting SGE Agent (%s)...", cfg.AgentID)
+
+	// 1.5 Auto-Update Check
+	// In production, get URLs from config
+	upd := &updater.Updater{
+		CurrentVersion: "0.1.0",
+		UpdateURL:      "https://update.sge.io/latest", // Mock
+		BinaryURL:      "",
+	}
+	if v, ok, _ := upd.CheckUpdate(); ok {
+		log.Printf("[Agent] New version %s found!", v)
+		if err := upd.PerformUpdate(); err != nil {
+			log.Printf("[Agent] Update failed: %v", err)
+		}
+	}
 
 	// 2. Communicator (mTLS)
 	comm, err := communicator.NewCommunicator(cfg)
