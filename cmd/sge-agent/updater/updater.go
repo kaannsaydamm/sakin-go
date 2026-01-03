@@ -98,7 +98,7 @@ func SelfRestart() error {
 	return syscallExec(exe, args, env)
 }
 
-func syscallExec(argv0 string, argv []string, envv []string) error {
+func syscallExec(_ string, _ []string, _ []string) error {
 	// Wrapper to handle OS differences if needed, but syscall.Exec is Unix only normally.
 	// Go's syscall.Exec replaces the process.
 	// On Windows this is not supported directly in the same way.
