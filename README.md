@@ -16,7 +16,7 @@ Bu proje, orijinal C# `sakin-core` mimarisinin **Go (Golang)** diline port edilm
     - **Analytics:** ClickHouse üzerinde Big Data analitiği ve Baseline tespiti.
     - **SOAR:** Otomatik aksiyon ve olay müdahale (Playbooks).
 - **Gelişmiş Yönetim:**
-    - **Panel:** Next.js ve Go Fiber tabanlı modern Web Arayüzü.
+    - **Panel:** Next.js + Shadcn UI tabanlı, Cyberpunk estetiğine sahip "Premium" Web Arayüzü. (Demo Modu içerir).
     - **TUI:** Terminal üzerinden anlık sistem izleme aracı.
     - **Health Check:** CLI tabanlı sağlık kontrolü.
 

@@ -4,13 +4,30 @@ SGE Dashboard için Backend API servisi.
 
 ## Özellikler
 - **Dashboard Stats:** ClickHouse'dan gerçek zamanlı olay istatistiklerini çeker.
-- **Alert Management:** Postgres üzerindeki alarmları listeler ve yönetir.
-- **Agent Command:** Agent'lara komut göndermek için NATS ile konuşur.
+- **Auto Schema Init:** Başlangıçta gerekli ClickHouse tablolarını (`events`, `network_flows`) otomatik oluşturur.
+- **Secure Auth:** ClickHouse ve Postgres bağlantılarında güvenli kimlik doğrulama kullanır.
+- **CORS:** Frontend geliştirme ortamı (`localhost:3000`) için yapılandırılmıştır.
 
 ## Teknoloji
-- Loglama ve İstatistikler için **ClickHouse**.
-- İlişkisel veriler (Kullanıcılar, Kurallar) için **PostgreSQL**.
-- HTTP Sunucusu için **Go Fiber**.
+- **Dil:** Go 1.22+
+- **Web Framework:** Fiber v2
+- **Veri Tabanları:**
+    - ClickHouse (OLAP - Loglar)
+    - PostgreSQL (OLTP - Meta Veri)
+- **Config:** `.env` dosyasından yükleme (`godotenv`).
+
+## Yapılandırma
+Aşağıdaki çevre değişkenleri `.env` dosyasında tanımlanmalıdır:
+
+```env
+PANEL_PORT=:8080
+CLICKHOUSE_ADDR=127.0.0.1
+CLICKHOUSE_DB=default
+CLICKHOUSE_USER=default
+CLICKHOUSE_PASSWORD=sakin123
+POSTGRES_ADDR=localhost
+POSTGRES_PASSWORD=sakin123
+```
 
 ## Çalıştırma
 ```bash
