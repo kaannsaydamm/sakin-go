@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 
 	"sakin-go/cmd/sge-panel-api/config"
 	"sakin-go/cmd/sge-panel-api/handlers"
@@ -13,22 +15,44 @@ import (
 )
 
 func main() {
+	// Load .env
+	if err := godotenv.Load(); err != nil {
+		log.Println("[Warning] No .env file found")
+	}
+
 	cfg := config.LoadConfig()
 	log.Println("[Panel API] Starting Backend...")
+	log.Printf("[Debug] ClickHouse Config - Host: %s, Port: %d, User: %s, DB: %s, PassLen: %d",
+		cfg.ClickHouseHost, cfg.ClickHousePort, cfg.ClickHouseUser, cfg.ClickHouseDB, len(cfg.ClickHousePass))
 
 	// 1. DB Clients
 	// ClickHouse
 	chCfg := &database.ClickHouseConfig{
-		Host: "localhost", Port: 9000, Database: "sge_logs", Username: "default",
+		Host:     cfg.ClickHouseHost,
+		Port:     cfg.ClickHousePort,
+		Database: cfg.ClickHouseDB,
+		Username: cfg.ClickHouseUser,
+		Password: cfg.ClickHousePass,
+		Debug:    true,
 	}
 	ch, err := database.NewClickHouseClient(chCfg)
 	if err != nil {
 		log.Fatalf("[Panel API] ClickHouse Init Failed: %v", err)
 	}
 
+	// Init Schema
+	if err := ch.InitializeSchema(context.Background()); err != nil {
+		log.Printf("[Warning] ClickHouse Schema Init Failed: %v", err)
+	}
+
 	// Postgres
 	pgCfg := &database.PostgresConfig{
-		Host: cfg.PostgresAddr, Port: 5432, Username: "postgres", Database: "sge_db", SSLMode: "disable",
+		Host:     cfg.PostgresHost,
+		Port:     cfg.PostgresPort,
+		Username: cfg.PostgresUser,
+		Password: cfg.PostgresPass,
+		Database: cfg.PostgresDB,
+		SSLMode:  "disable",
 	}
 	pg, err := database.NewPostgresClient(pgCfg)
 	if err != nil {

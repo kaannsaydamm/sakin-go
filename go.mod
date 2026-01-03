@@ -11,6 +11,7 @@ require (
 	github.com/expr-lang/expr v1.17.7
 	github.com/gofiber/fiber/v2 v2.52.10
 	github.com/google/gopacket v1.1.19
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/nats-io/nats.go v1.48.0
 	github.com/oschwald/geoip2-golang v1.13.0

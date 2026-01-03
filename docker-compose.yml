@@ -37,6 +37,9 @@ services:
       nofile:
         soft: 262144
         hard: 262144
+    environment:
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=sakin123
     volumes:
       - chdata:/var/lib/clickhouse
 
